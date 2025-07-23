@@ -1,0 +1,136 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+  id          Int        @id @default(autoincrement())
+  firstName   String
+  secondName  String
+  nicname     String
+  email       String     @unique
+  password    String
+  avatarURL   String
+  birthDay    DateTime
+  sex         String
+  role      Role     @default(USER)
+  createdAt   DateTime   @default(now())
+
+   //relations
+  products    Product[]
+  ratings     Rating[]
+  responses   Response[]
+  orders  Order[]
+  carts Cart[]
+  
+
+}
+
+enum Role {
+  USER
+  ADMIN
+  MODERATOR
+}
+
+model Product {
+  id           Int        @id @default(autoincrement())
+  name         String
+  imgURL       String
+  shortDescr   String
+  fullDescr    String
+  price        Float
+  category     String
+  color        String
+  season       String
+  quantity     Int
+  createdAt    DateTime   @default(now())
+
+   //relations
+  buyerId      Int
+  buyer        User       @relation(fields: [buyerId], references: [id])
+  ratings      Rating[]
+  responses    Response[]
+  orders  Order[]
+  cartItems  CartItem[]
+}
+
+model Rating {
+  id          Int        @id @default(autoincrement())
+  rate        Float
+  createdAt   DateTime   @default(now())
+
+   //relations
+  userId      Int
+  productId   Int
+  user        User       @relation(fields: [userId], references: [id])
+  product     Product    @relation(fields: [productId], references: [id])
+
+  @@unique([userId, productId]) 
+}
+
+model Response {
+  id            Int        @id @default(autoincrement())
+  responceText  String
+  likes         Int
+  createdAt     DateTime   @default(now())
+
+  //relations
+  userId        Int
+  productId     Int
+  user          User       @relation(fields: [userId], references: [id])
+  product       Product    @relation(fields: [productId], references: [id])
+}
+
+
+model Order {
+  id          Int       @id @default(autoincrement())
+  status      OrderStatus  @default(PENDING)
+  amount      Float
+  quantity    Int       @default(1)
+  orderId     String    @unique 
+  liqpayData  String?   
+  liqpaySignature String? 
+  createdAt   DateTime  @default(now())
+
+  userId        Int
+  productId     Int
+  user          User       @relation(fields: [userId], references: [id])
+  product       Product    @relation(fields: [productId], references: [id])
+}
+
+enum OrderStatus {
+  PENDING   // Ще не оплачено
+  PAID      // Успішно оплачено
+  CANCELED  // Скасовано
+}
+
+model Cart {
+  id        Int        @id @default(autoincrement())
+  userId    Int        @unique
+  user      User       @relation(fields: [userId], references: [id])
+  items     CartItem[]
+  updatedAt DateTime   @updatedAt
+  createdAt DateTime   @default(now())
+}
+
+model CartItem {
+  id        Int       @id @default(autoincrement())
+  cartId    Int
+  cart      Cart      @relation(fields: [cartId], references: [id])
+  
+  productId Int
+  product   Product   @relation(fields: [productId], references: [id])
+  
+  quantity  Int       @default(1)
+  
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@unique([cartId, productId]) 
+}

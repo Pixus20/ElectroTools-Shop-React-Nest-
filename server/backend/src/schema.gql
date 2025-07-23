@@ -1,0 +1,196 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type UserModel {
+  id: Int!
+  firstName: String!
+  secondName: String!
+  nicname: String!
+  email: String!
+  password: String!
+  avatarURL: String!
+  birthDay: DateTime!
+  sex: String!
+  role: Role!
+  createdAt: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+"""The roles of the user"""
+enum Role {
+  USER
+  ADMIN
+  MODERATOR
+}
+
+type ProductInCartModel {
+  id: Int!
+  name: String!
+  price: Float!
+  imgURL: String!
+}
+
+type CartItem {
+  id: Int!
+  quantity: Int!
+  product: ProductInCartModel!
+}
+
+type ProductModel {
+  id: Int!
+  name: String!
+  imgURL: String!
+  shortDescr: String!
+  fullDescr: String!
+  price: Float!
+  category: String!
+  color: String!
+  season: String!
+  quantity: Int!
+  createdAt: DateTime!
+}
+
+type ResponseModel {
+  id: Int!
+  responceText: String!
+  likes: Int!
+  createdAt: DateTime!
+  userId: Int!
+  productId: Int!
+  user: UserModel!
+  product: ProductModel!
+}
+
+type CreatePaymentOutput {
+  data: String!
+  signature: String!
+}
+
+type CreateOrderOutput {
+  success: Boolean!
+  message: String
+}
+
+type AverageRatingOutput {
+  average: Float!
+  count: Int!
+}
+
+type RatingModel {
+  id: Int!
+  rate: Float!
+  createdAt: DateTime!
+  user: UserModel!
+  product: ProductModel!
+}
+
+type Query {
+  users: [UserModel!]!
+  me: UserModel!
+  usersGuard: [UserModel!]!
+  products: [ProductModel!]!
+  product(id: Int!): ProductModel
+  getAllResponses: [ResponseModel!]!
+  getResponsesByProductId(productId: Int!): [ResponseModel!]!
+  getResponseById(id: Int!): ResponseModel!
+  getAverageRating(productId: Int!): AverageRatingOutput!
+  getUserRating(productId: Int!): RatingModel
+  cartItems: [CartItem!]!
+}
+
+type Mutation {
+  register(registerInput: RegisterInput!): UserModel!
+  login(loginInput: LoginInput!): String!
+  updateMe(input: UpdateUserInput!): UserModel!
+  createProduct(createProductInput: CreateProductInput!): ProductModel!
+  updateProduct(updateProductInput: UpdateProductInput!): ProductModel!
+  deleteProduct(id: Int!): ProductModel!
+  createResponse(createResponseInput: CreateResponseInput!): ResponseModel!
+  deleteResponse(id: Int!): ResponseModel!
+  likeResponse(id: Int!): ResponseModel!
+  rateProduct(input: CreateOrUpdateRatingInput!): RatingModel!
+  createPayment(input: CreatePaymentInput!): CreatePaymentOutput!
+  createOrder(input: CreateOrderInput!): CreateOrderOutput!
+  addToCart(productId: Int!, quantity: Int!): CartItem!
+  removeFromCart(productId: Int!): Boolean!
+}
+
+input RegisterInput {
+  email: String!
+  password: String!
+  firstName: String!
+  secondName: String!
+  nicname: String!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+input UpdateUserInput {
+  firstName: String
+  secondName: String
+  nicname: String
+  avatarURL: String
+  birthDay: DateTime
+  sex: String
+}
+
+input CreateProductInput {
+  name: String!
+  imgURL: String!
+  shortDescr: String!
+  fullDescr: String!
+  price: Float!
+  category: String!
+  color: String!
+  season: String!
+  quantity: Int!
+  buyerId: Int!
+}
+
+input UpdateProductInput {
+  name: String
+  imgURL: String
+  shortDescr: String
+  fullDescr: String
+  price: Float
+  category: String
+  color: String
+  season: String
+  quantity: Int
+  buyerId: Int
+  id: Int!
+}
+
+input CreateResponseInput {
+  responceText: String!
+  likes: Int!
+  userId: Int!
+  productId: Int!
+}
+
+input CreateOrUpdateRatingInput {
+  productId: Int!
+  rate: Float!
+}
+
+input CreatePaymentInput {
+  amount: Float!
+  orderId: String!
+}
+
+input CreateOrderInput {
+  productId: Int!
+  amount: Float!
+  quantity: Int!
+  orderId: String!
+  liqpayData: String!
+  liqpaySignature: String!
+}
