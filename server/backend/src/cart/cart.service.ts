@@ -67,4 +67,44 @@ export class CartService {
       },
     });
   }
+
+  async updateQuantity(userId: number, productId: number, quantity: number): Promise<CartItem> {
+    const cart = await this.prisma.cart.findUnique({
+      where: { userId },
+    });
+  
+    if (!cart) {
+      throw new Error('Cart not found');
+    }
+  
+    const updatedItem = await this.prisma.cartItem.update({
+      where: {
+        cartId_productId: {
+          cartId: cart.id,
+          productId,
+        },
+      },
+      data: {
+        quantity,
+      },
+      include: {
+        product: true,
+      },
+    });
+  
+    return updatedItem;
+  }
+
+  async clearCart(userId: number): Promise<void> {
+    const cart = await this.prisma.cart.findUnique({
+      where: { userId },
+    });
+  
+    if (!cart) return;
+  
+    await this.prisma.cartItem.deleteMany({
+      where: { cartId: cart.id },
+    });
+  }
+
 }

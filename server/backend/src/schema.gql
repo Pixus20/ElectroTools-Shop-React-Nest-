@@ -118,6 +118,8 @@ type Mutation {
   createOrder(input: CreateOrderInput!): CreateOrderOutput!
   addToCart(productId: Int!, quantity: Int!): CartItem!
   removeFromCart(productId: Int!): Boolean!
+  updateCartQuantity(productId: Int!, quantity: Int!): CartItem!
+  clearCart: Boolean!
 }
 
 input RegisterInput {

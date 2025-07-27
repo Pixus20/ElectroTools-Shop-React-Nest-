@@ -39,4 +39,28 @@ export class CartResolver {
     await this.cartService.removeFromCart(userId, productId);
     return true;
   }
+
+  @Mutation(() => CartItem)
+@UseGuards(GqlAuthGuard)
+async updateCartQuantity(
+  @Args('productId', { type: () => Int }) productId: number,
+  @Args('quantity', { type: () => Int }) quantity: number,
+  @Context() context: any,
+): Promise<CartItem> {
+  const userId = context.req.user.id;
+  return this.cartService.updateQuantity(userId, productId, quantity);
 }
+
+@Mutation(() => Boolean)
+@UseGuards(GqlAuthGuard)
+async clearCart(@Context() context: any): Promise<boolean> {
+  const userId = context.req.user.id;
+  await this.cartService.clearCart(userId);
+  return true;
+}
+
+
+
+}
+
+

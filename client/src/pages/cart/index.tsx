@@ -1,17 +1,10 @@
 // 'use client';
+
+// import CartItemControls from '@/components/CartPage/CartItemControls';
 // import { useCartStore } from '@/store/useCartStore';
 // import Link from 'next/link';
 // import { useState } from 'react';
-// import { useMutation } from '@apollo/client';
-// import { CREATE_ORDER } from '../../../graphql/order/createOrder';
-
-
-// interface Product {
-//   id: string;
-//   name: string;
-//   price: number;
-//   quantity: number;
-// }
+// import { CartSync } from '@/components/CartPage/CartSync';
 
 // const relatedProducts = {
 //   '1': [{ id: '4', name: 'Аксесуар 1', price: 50 }],
@@ -20,16 +13,16 @@
 
 // export default function CartPage() {
 //   const items = useCartStore((state) => state.items);
-//   const removeItem = useCartStore((state) => state.removeItem);
+//   const clearCart = useCartStore((state) => state.clearCart);
 
 //   const [paid, setPaid] = useState(false);
 
 //   const totalPrice = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
 //   const handlePay = () => {
-//     // Тут могла б бути логіка оплати, але для прикладу просто підтверджуємо
 //     alert('Оплата успішна!');
 //     setPaid(true);
+//     clearCart();
 //   };
 
 //   if (paid) {
@@ -60,13 +53,8 @@
 //                     Кількість: {item.quantity} × {item.price} грн ={' '}
 //                     <b>{item.price * item.quantity} грн</b>
 //                   </p>
+//                   <CartItemControls productId={item.productId} />
 //                 </div>
-//                 <button
-//                   onClick={() => removeItem(item.id)}
-//                   className="text-red-500 hover:underline"
-//                 >
-//                   Видалити
-//                 </button>
 //               </div>
 
 //               {relatedProducts[item.id] && relatedProducts[item.id].length > 0 && (
@@ -90,8 +78,15 @@
 //           </div>
 
 //           <button
+//             onClick={handleClear}
+//             className="mt-4 w-full bg-gray-200 hover:bg-gray-300 text-black py-2 rounded transition"
+//           >
+//             Очистити кошик
+//           </button>
+
+//           <button
 //             onClick={handlePay}
-//             className="mt-6 w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded text-lg transition"
+//             className="mt-4 w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded text-lg transition"
 //           >
 //             Оплатити
 //           </button>
@@ -102,12 +97,16 @@
 // }
 
 
+
 'use client';
 
 import CartItemControls from '@/components/CartPage/CartItemControls';
+import { CartSync } from '@/components/CartPage/CartSync';
 import { useCartStore } from '@/store/useCartStore';
+import { useMutation } from '@apollo/client';
 import Link from 'next/link';
 import { useState } from 'react';
+import { CLEAR_CART } from '../../../graphql/cart/getCart';
 
 const relatedProducts = {
   '1': [{ id: '4', name: 'Аксесуар 1', price: 50 }],
@@ -116,16 +115,35 @@ const relatedProducts = {
 
 export default function CartPage() {
   const items = useCartStore((state) => state.items);
-  const clearCart = useCartStore((state) => state.clearCart);
-
+  const clearCartLocal = useCartStore((state) => state.clearCart);
+  const setIsSynced = useCartStore((state) => state.setIsSynced);
   const [paid, setPaid] = useState(false);
+
+  const [clearCartMutation] = useMutation(CLEAR_CART);
 
   const totalPrice = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
-  const handlePay = () => {
-    alert('Оплата успішна!');
-    setPaid(true);
-    clearCart();
+  const handleClear = async () => {
+    try {
+      await clearCartMutation();
+      clearCartLocal();
+      setIsSynced(false); // дозволяє CartSync синхронізувати знову
+    } catch (error) {
+      console.error('❌ Помилка при очищенні корзини:', error);
+    }
+  };
+
+  const handlePay = async () => {
+    try {
+      await clearCartMutation();
+      clearCartLocal();
+      setIsSynced(false);
+      setPaid(true);
+      alert('Оплата успішна!');
+    } catch (error) {
+      console.error('❌ Помилка при оплаті:', error);
+      alert('Сталася помилка при оплаті');
+    }
   };
 
   if (paid) {
@@ -181,7 +199,7 @@ export default function CartPage() {
           </div>
 
           <button
-            onClick={clearCart}
+            onClick={handleClear}
             className="mt-4 w-full bg-gray-200 hover:bg-gray-300 text-black py-2 rounded transition"
           >
             Очистити кошик
@@ -193,6 +211,8 @@ export default function CartPage() {
           >
             Оплатити
           </button>
+
+          <CartSync />
         </div>
       )}
     </div>

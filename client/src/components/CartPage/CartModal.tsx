@@ -16,8 +16,8 @@ export default function CartModal({ isOpen, onClose }: CartModalProps) {
   const { data, loading, error } = useQuery(GET_CART);
   const items = useCartStore((state) => state.items);
   const setItems = useCartStore((state) => state.setItems);
+  const setIsSynced = useCartStore((state) => state.setIsSynced);
 
-  // Синхронізація даних із серверу у Zustand стейт
   useEffect(() => {
     if (data?.cartItems) {
       const transformedItems = data.cartItems.map((item: any) => ({
@@ -29,8 +29,9 @@ export default function CartModal({ isOpen, onClose }: CartModalProps) {
       }));
 
       setItems(transformedItems);
+      setIsSynced(true); 
     }
-  }, [data, setItems]);
+  }, [data, setItems, setIsSynced]);
 
   return (
     <AnimatePresence>
@@ -84,4 +85,3 @@ export default function CartModal({ isOpen, onClose }: CartModalProps) {
     </AnimatePresence>
   );
 }
-

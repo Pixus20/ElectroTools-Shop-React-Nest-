@@ -35,3 +35,22 @@ export const REMOVE_FROM_CART = gql`
     removeFromCart(productId: $productId)
   }
 `;
+
+
+export const UPDATE_CART_QUANTITY = gql`
+  mutation UpdateCartQuantity($productId: Int!, $quantity: Int!) {
+    updateCartQuantity(productId: $productId, quantity: $quantity) {
+      id
+      quantity
+      product {
+        name
+      }
+    }
+  }
+`;
+
+export const CLEAR_CART = gql`
+  mutation ClearCart {
+    clearCart
+  }
+`;
