@@ -1,7 +1,6 @@
 import ChromaGrid from "@/components/GoodsPage/ChromaGrid";
 import { useQuery } from "@apollo/client";
 import Autocomplete from '@mui/material/Autocomplete';
-import Pagination from "@mui/material/Pagination";
 import TextField from '@mui/material/TextField';
 import { GET_PRODUCTS } from "../../../graphql/product/getProduct";
 
@@ -45,7 +44,6 @@ export default function Goods() {
           fadeOut={0.6}
           ease="power3.out"
         />
-        <Pagination className="py-2 flex justify-center" count={10} />
       </div>
     </div>
   );
