@@ -47,7 +47,7 @@ export class AuthService {
       throw new Error('Invalid credentials');
     }
 
-    const payload = { sub: user.id, email: user.email };
+    const payload = { sub: user.id, email: user.email, role:user.role };
     return this.jwtService.sign(payload);
   }
 }

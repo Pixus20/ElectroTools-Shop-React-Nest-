@@ -89,14 +89,19 @@ export default function CreateProductPage() {
         </Grid>
 
         <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          disabled={loading}
-          sx={{ mt: 2 }}
-        >
-          {loading ? "Додається..." : "Додати товар"}
-        </Button>
+  type="submit"
+  disabled={loading}
+  sx={{
+    mt: 2,
+    backgroundColor: '#fcd34d', 
+    color: '#000',
+    '&:hover': {
+      backgroundColor: '#fbbf24', 
+    },
+  }}
+>
+  {loading ? "Додається..." : "Додати товар"}
+</Button>
 
         {error && <Typography color="error">Помилка: {error.message}</Typography>}
       </form>

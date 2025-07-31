@@ -96,6 +96,14 @@ export default function ProfilePage() {
           <p><strong>Дата створення акаунту:</strong> {new Date(data.me.createdAt).toLocaleDateString()}</p>
           
 
+          {data.me.role === 'MODERATOR' && (
+              <button
+                onClick={() => router.push('/addgoods')}
+                className="mt-6 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+              >
+                ➕ Додати товар
+              </button>
+            )}
           <button
             onClick={handleEditToggle}
             className="mt-4 flex items-center text-orange-500 hover:text-orange-700"
