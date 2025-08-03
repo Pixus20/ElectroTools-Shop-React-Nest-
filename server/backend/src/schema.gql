@@ -76,6 +76,28 @@ type CreateOrderOutput {
   message: String
 }
 
+type Order {
+  id: Int!
+  status: OrderStatus!
+  amount: Float!
+  quantity: Int!
+  orderId: String!
+  liqpayData: String
+  liqpaySignature: String
+  createdAt: DateTime!
+  userId: Int!
+  productId: Int!
+  user: UserModel!
+  product: ProductModel!
+}
+
+"""Статус замовлення"""
+enum OrderStatus {
+  PENDING
+  PAID
+  CANCELED
+}
+
 type AverageRatingOutput {
   average: Float!
   count: Int!
@@ -100,6 +122,8 @@ type Query {
   getResponseById(id: Int!): ResponseModel!
   getAverageRating(productId: Int!): AverageRatingOutput!
   getUserRating(productId: Int!): RatingModel
+  ordersByStatus(statuses: [OrderStatus!]!): [Order!]!
+  GetOrderById(id: Int!): Order!
   cartItems: [CartItem!]!
 }
 
