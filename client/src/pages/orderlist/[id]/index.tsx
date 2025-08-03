@@ -14,11 +14,11 @@ const OrderPage = () => {
 
   if (loading) return <p>Завантаження...</p>;
   if (error) return <p>Помилка: {error.message}</p>;
-  if (!data?.order) return <p>Замовлення не знайдено</p>;
+  if (!data?.GetOrderById) return <p>Замовлення не знайдено</p>;
 
   return (
     <div className="p-6">
-      <OrderDetails order={data.order} />
+      <OrderDetails order={data.GetOrderById} />
     </div>
   );
 };

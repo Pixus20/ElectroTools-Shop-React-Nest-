@@ -96,12 +96,20 @@ export default function ProfilePage() {
           <p><strong>Дата створення акаунту:</strong> {new Date(data.me.createdAt).toLocaleDateString()}</p>
           
 
-          {data.me.role === 'MODERATOR' && (
+          {data.me.role === 'MODERATOR' || 'ADMIN' && (
               <button
                 onClick={() => router.push('/addgoods')}
-                className="mt-6 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+                className="mt-6 px-4 mr-3 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
               >
                 ➕ Додати товар
+              </button>
+            )}
+            {data.me.role === 'ADMIN' && (
+              <button
+                onClick={() => router.push('/orderlist')}
+                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+              >
+                📦 Показати замовлення
               </button>
             )}
           <button

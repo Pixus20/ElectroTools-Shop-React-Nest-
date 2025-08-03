@@ -29,7 +29,7 @@ ordersByStatus(
 }
 
 @Query(() => Order)
-async GetOrderById(@Args('id', { type: () => Int }) id: number) {
+GetOrderById(@Args('id', { type: () => Int }) id: number) {
   return this.orderService.findById(id);
 }
 }

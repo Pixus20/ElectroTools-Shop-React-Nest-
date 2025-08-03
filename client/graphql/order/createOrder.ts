@@ -33,7 +33,7 @@ export const GET_ALL_ORDERS = gql`
 
 export const GET_ORDER_BY_ID = gql`
   query GetOrderById($id: Int!) {
-    order(id: $id) {
+    GetOrderById(id: $id) {
       id
       orderId
       status
